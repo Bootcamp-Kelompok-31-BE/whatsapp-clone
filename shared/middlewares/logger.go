@@ -4,16 +4,15 @@ import (
 	"context"
 	"time"
 
+	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/util"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
 
-type loggerKey string
 type traceIDKey string
 
 const (
-	LoggerKey  loggerKey  = "logger"
 	TraceIDKey traceIDKey = "trace_id"
 )
 
@@ -30,7 +29,7 @@ func LoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 
 		requestLogger := logger.With(zap.String("trace_id", traceID))
 
-		ctx = context.WithValue(ctx, LoggerKey, requestLogger)
+		ctx = context.WithValue(ctx, util.LoggerKeyVal, requestLogger)
 		c.Request = c.Request.WithContext(ctx)
 
 		start := time.Now()
@@ -49,12 +48,4 @@ func LoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 			zap.String("client_ip", c.ClientIP()),
 		)
 	}
-}
-
-func FromContext(ctx context.Context) *zap.Logger {
-	logger, ok := ctx.Value(LoggerKey).(*zap.Logger)
-	if !ok {
-		return zap.L()
-	}
-	return logger
 }

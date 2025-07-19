@@ -10,6 +10,7 @@ import (
 
 	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/config"
 	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/models"
+	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/util"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
@@ -80,7 +81,7 @@ func ValidateToken(config *config.Config, tokenString string) (*JWTClaims, error
 
 func JWTMiddleware(config *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		logger := FromContext(c.Request.Context())
+		logger := util.LoggerFromContext(c.Request.Context())
 
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
