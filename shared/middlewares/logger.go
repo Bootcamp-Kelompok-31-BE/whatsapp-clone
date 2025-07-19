@@ -4,16 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/util"
+	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/constant"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
-)
-
-type traceIDKey string
-
-const (
-	TraceIDKey traceIDKey = "trace_id"
 )
 
 func InitZap() (*zap.Logger, error) {
@@ -25,11 +19,11 @@ func InitZap() (*zap.Logger, error) {
 func LoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		traceID := uuid.New().String()
-		ctx := context.WithValue(c.Request.Context(), TraceIDKey, traceID)
+		ctx := context.WithValue(c.Request.Context(), constant.TraceIDKey, traceID)
 
 		requestLogger := logger.With(zap.String("trace_id", traceID))
 
-		ctx = context.WithValue(ctx, util.LoggerKeyVal, requestLogger)
+		ctx = context.WithValue(ctx, constant.LoggerKey, requestLogger)
 		c.Request = c.Request.WithContext(ctx)
 
 		start := time.Now()

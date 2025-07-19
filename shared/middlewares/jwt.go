@@ -9,19 +9,12 @@ import (
 	"time"
 
 	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/config"
+	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/constant"
 	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/models"
 	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/util"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
-)
-
-type userIDKey string
-type userEmailKey string
-
-const (
-	UserIDKey    userIDKey    = "user_id"
-	UserEmailKey userEmailKey = "user_email"
 )
 
 type JWTClaims struct {
@@ -81,7 +74,7 @@ func ValidateToken(config *config.Config, tokenString string) (*JWTClaims, error
 
 func JWTMiddleware(config *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		logger := util.LoggerFromContext(c.Request.Context())
+		logger := util.GetLoggerFromContext(c.Request.Context())
 
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
@@ -116,8 +109,8 @@ func JWTMiddleware(config *config.Config) gin.HandlerFunc {
 		}
 
 		ctx := c.Request.Context()
-		ctx = context.WithValue(ctx, UserIDKey, claims.UserID)
-		ctx = context.WithValue(ctx, UserEmailKey, claims.Email)
+		ctx = context.WithValue(ctx, constant.UserIDKey, claims.UserID)
+		ctx = context.WithValue(ctx, constant.UserEmailKey, claims.Email)
 
 		c.Request = c.Request.WithContext(ctx)
 
@@ -133,14 +126,4 @@ func JWTMiddleware(config *config.Config) gin.HandlerFunc {
 
 		c.Next()
 	}
-}
-
-func GetUserIDFromContext(ctx context.Context) (uint, bool) {
-	userID, ok := ctx.Value(UserIDKey).(uint)
-	return userID, ok
-}
-
-func GetUserEmailFromContext(ctx context.Context) (string, bool) {
-	email, ok := ctx.Value(UserEmailKey).(string)
-	return email, ok
 }

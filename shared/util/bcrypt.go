@@ -1,11 +1,12 @@
 package util
 
-import "golang.org/x/crypto/bcrypt"
-
-const bcryptCost = 14
+import (
+	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/constant"
+	"golang.org/x/crypto/bcrypt"
+)
 
 func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcryptCost)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), constant.BCryptCost)
 	return string(bytes), err
 }
 

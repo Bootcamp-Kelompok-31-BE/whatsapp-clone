@@ -8,29 +8,41 @@ import (
 
 type (
 	Config struct {
-		Db     *Database
-		Server *Server
-		JWT    *JWT
+		DB     *Database `mapstructure:"db"`
+		Server *Server   `mapstructure:"server"`
+		JWT    *JWT      `mapstructure:"jwt"`
+		Redis  *Redis    `mapstructure:"redis"`
 	}
 
 	Database struct {
-		Host     string
-		Port     int
-		User     string
-		Password string
-		DbName   string
-		SslMode  string
-		TimeZone string
+		Host         string `mapstructure:"host"`
+		Port         int    `mapstructure:"port"`
+		User         string `mapstructure:"user"`
+		Password     string `mapstructure:"password"`
+		DatabaseName string `mapstructure:"database_name"`
+		SslMode      string `mapstructure:"sslmode"`
+		TimeZone     string `mapstructure:"timezone"`
+
+		MaxIdleConns             int `mapstructure:"max_idle_conns"`
+		MaxOpenConns             int `mapstructure:"max_open_conns"`
+		ConnMaxLifetimeInSeconds int `mapstructure:"conn_max_lifetime_in_seconds"`
 	}
 
 	Server struct {
-		Port int
-		Host string
+		Port int    `mapstructure:"port"`
+		Host string `mapstructure:"host"`
 	}
 
 	JWT struct {
-		SecretKey string
-		ExpiredAt int
+		SecretKey string `mapstructure:"secretkey"`
+		ExpiredAt int    `mapstructure:"expired_at"`
+	}
+
+	Redis struct {
+		Host     string `mapstructure:"host"`
+		Port     int    `mapstructure:"port"`
+		Password string `mapstructure:"password"`
+		DB       int    `mapstructure:"db"`
 	}
 )
 

@@ -5,11 +5,20 @@ server:
 db:
   host: localhost
   port: 5432
-  user: messaging
-  password: messaging
-  dbname: messaging
+  user: whatsapp_clone_messaging_service
+  password: whatsapp_clone_messaging_service
+  database_name: whatsapp_clone_messaging_service
   sslmode: disable
   timezone: Asia/Bangkok
+  max_idle_conns: 10
+  max_open_conns: 100
+  conn_max_lifetime_in_seconds: 3600
+
+redis:
+  host: localhost
+  port: 6379
+  password:
+  db: 0
 
 jwt:
   secretkey: "rustrustrustrustrust"
