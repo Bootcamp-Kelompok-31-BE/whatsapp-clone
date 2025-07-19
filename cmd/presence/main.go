@@ -33,10 +33,13 @@ func main() {
 	r.Use(gin.Recovery())
 	r.Use(middlewares.LoggerMiddleware(logger))
 
-	r.GET("/presence/:id", presenceH.GetStatus)
-	r.POST("/presence/:id/online", presenceH.SetOnline)
-	r.POST("/presence/:id/offline", presenceH.SetOffline)
-	r.GET("/lastseen/:id", presenceH.GetLastSeen)
+	v1 := r.Group("/api/v1/presence")
+	{
+		v1.GET("/:id", presenceH.GetStatus)
+		v1.POST("/:id/online", presenceH.SetOnline)
+		v1.POST("/:id/offline", presenceH.SetOffline)
+		v1.GET("/:id/lastseen", presenceH.GetLastSeen)
+	}
 
 	// ✅ RUN SERVER
 	logger.Info("Server is running",
