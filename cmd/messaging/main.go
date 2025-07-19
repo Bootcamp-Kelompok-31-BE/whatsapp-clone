@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/config"
-	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/domains/media/handlers"
+	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/domains/messaging/handlers"
 	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/middlewares"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -23,7 +23,7 @@ func main() {
 	r.Use(middlewares.LoggerMiddleware(logger))
 
 	router := r.Group("/api/v1")
-	messageHandler := handlers.NewMessageHandler()
+	messageHandler := handlers.NewMessageHandler(config)
 	messageHandler.Register(router)
 
 	logger.Info("Server is running", zap.String("host", config.Server.Host), zap.Int("port", config.Server.Port))

@@ -10,3 +10,7 @@ db:
   dbname: messaging
   sslmode: disable
   timezone: Asia/Bangkok
+
+jwt:
+  secretkey: "rustrustrustrustrust"
+  expiredat: 86400

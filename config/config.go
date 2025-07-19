@@ -10,6 +10,7 @@ type (
 	Config struct {
 		Db     *Database
 		Server *Server
+		JWT    *JWT
 	}
 
 	Database struct {
@@ -25,6 +26,11 @@ type (
 	Server struct {
 		Port int
 		Host string
+	}
+
+	JWT struct {
+		SecretKey string
+		ExpiredAt int
 	}
 )
 
