@@ -1,0 +1,12 @@
+Server:
+  host: localhost
+  port: 8080
+  
+Db:
+  host: localhost
+  port: 5432
+  user: media
+  password: media
+  dbname: media
+  sslmode: disable
+  timezone: Asia/Bangkok
