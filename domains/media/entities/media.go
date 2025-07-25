@@ -8,8 +8,7 @@ type Media struct {
 	ID        uuid.UUID 	`gorm:"type:uuid;primaryKey"`
 	Name      string    	`json:"name"`
 	MediaType string    	`json:"type"` // e.g., image, video, audio, document
-	/*
 	Sender    string    	
-	Receiver  string */
+	Receiver  string 
 	CreatedAt time.Time    `json:"created_at"`
 }

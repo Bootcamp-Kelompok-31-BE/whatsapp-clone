@@ -13,10 +13,12 @@ type MediaUseCase interface {
 	Home(ctx context.Context) (*sharedresponses.BasicResponse, error)
 	UploadFile(ctx context.Context, request *requests.MediaResponse) (*sharedresponses.BasicResponse, error)
 	GetFile(ctx context.Context, name string) (*responses.MediaResponse, error)
-	// SendFile(ctx context.Context, request *requests.MediaResponse) (*sharedresponses.BasicResponse, error)
+	SendFile(ctx context.Context, name string, toUser string) (*sharedresponses.BasicResponse, error)
 }
 
 type MediaRepository interface {
 	FindByName(ctx context.Context, name string) (*entities.Media, error)
-	CreateFile(ctx context.Context, name string, MediaType string) (*entities.Media, error)
+	// FindByUserName(ctx context.Context, request *requests.MediaResponse, username string) (*entities.Media, error)
+	UpdateMedia(ctx context.Context, media *entities.Media) error
+	CreateFile(ctx context.Context, name string, MediaType string, Sender string, Receiver string) (*entities.Media, error)
 }

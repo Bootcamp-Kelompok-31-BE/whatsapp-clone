@@ -41,6 +41,7 @@ func main() {
 	{
 		media.GET("/media/find/:name", MediaHttp.GetFile)
 		media.POST("/media/upload", MediaHttp.UploadFile)
+		// media.POST("/media/:name/sendChat", MediaHttp.UploadFile)
 	}
 
 	logger.Info("Server is running", zap.String("host", config.Server.Host), zap.Int("port", config.Server.Port))

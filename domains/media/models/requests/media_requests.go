@@ -8,6 +8,6 @@ type MediaResponse struct {
 	Header 		*multipart.FileHeader
 	// Name        string `json:"name"`
 	MediaType 	string `json:"type"`
-	// Sender 		string `json:"sender"`
-	// Receiver 	string `json:"receiver"`
+	Sender 		string `json:"sender"`
+	Receiver 	string `json:"receiver"`
 }

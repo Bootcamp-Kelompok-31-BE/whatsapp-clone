@@ -2,8 +2,7 @@ package usecases
 
 import (
 	"context"
-	// "io"
-	// "os"
+
 	"path/filepath"
 	"strings"
 
@@ -11,7 +10,9 @@ import (
 	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/domains/media/entities"
 	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/domains/media/models/requests"
 	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/domains/media/models/responses"
+
 	// "github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/E2E"
+	"github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/middlewares"
 	sharedresponses "github.com/Bootcamp-Kelompok-31-BE/whatsapp-clone/shared/models/responses"
 )
 
@@ -44,14 +45,28 @@ func (mc *mediaUseCase) UploadFile(ctx context.Context, request *requests.MediaR
 		default:
 			request.MediaType = "unknown"
 	}
+	
+	encryptedFile, err1 := middlewares.Encrypt([]byte(filename))
+	encryptedSender, err2 := middlewares.Encrypt([]byte(request.Sender))
+	encryptedReceiver, err3 := middlewares.Encrypt([]byte(request.Receiver))
 
-
-	media := &entities.Media{
-		Name:      filename,
-		MediaType: request.MediaType,
+	switch {
+		case err1 != nil:
+			return nil, err1
+		case err2 != nil:
+			return nil, err2
+		case err3 != nil:
+			return nil, err3
 	}
 
-	_, err := mc.repo.CreateFile(ctx, media.Name, media.MediaType)
+	media := &entities.Media{
+		Name:      string(encryptedFile),
+		MediaType: request.MediaType,
+		Sender:    string(encryptedSender),
+		Receiver:  string(encryptedReceiver),
+	}
+
+	_, err := mc.repo.CreateFile(ctx, media.Name, media.MediaType, media.Sender, media.Receiver)
 	if err != nil {
 		return nil, err
 	}
@@ -74,33 +89,19 @@ func (mc *mediaUseCase) GetFile(ctx context.Context, name string) (*responses.Me
 	return &responses.MediaResponse{
 		Name:      mediaEntity.Name,
 		MediaType: mediaEntity.MediaType,
+		Sender:    mediaEntity.Sender,
+		Receiver:  mediaEntity.Receiver,
 	}, nil
 }
 	
-
-/*
-func (mc *mediaUseCase) SendFile(ctx context.Context, request *requests.MediaResponse) (*sharedresponses.BasicResponse, error) {
-	filename := request.Header.Filename
-	extension := strings.ToLower(filepath.Ext(filename))
-	var mediaType string
-
-	switch extension {
-	case ".jpg", ".jpeg", ".png", ".gif":
-		mediaType = "image"
-	case ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".txt":
-		mediaType = "document"
-	default:
-		mediaType = "unknown"
+// ga pake ini dulu
+func (mc *mediaUseCase) SendFile(ctx context.Context, name string, to string) (*sharedresponses.BasicResponse, error) {
+	media, err := mc.repo.FindByName(ctx, name)
+	if err != nil {
+		return nil, err
 	}
-	
-	media := &entities.Media{
-		Name:      filename,
-		MediaType: mediaType,
-		Sender:    request.Sender,
-		Receiver:  request.Receiver,
-	}
-
-	_, err := mc.repo.CreateFile(ctx, media.Name, media.MediaType)
+	media.Receiver = to
+	err = mc.repo.UpdateMedia(ctx, media)
 	if err != nil {
 		return nil, err
 	}
@@ -109,8 +110,8 @@ func (mc *mediaUseCase) SendFile(ctx context.Context, request *requests.MediaRes
 		Data: struct {
 			Message string
 		}{
-			Message: "File uploaded successfully",
+			Message: "Message sent successfully",
 		},
 	}, nil
-} */
 
+}

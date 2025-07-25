@@ -43,7 +43,6 @@ func (mh *MediaHttp) GetFile(c *gin.Context) {
 }
 
 func (mh *MediaHttp) UploadFile(c *gin.Context) {
-	
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "File is required"})
@@ -51,9 +50,12 @@ func (mh *MediaHttp) UploadFile(c *gin.Context) {
 	}
 	defer file.Close()
 
+
 	request := &requests.MediaResponse{
 		File:  file,
 		Header: header,
+		Sender: c.PostForm("sender"),
+		Receiver: c.PostForm("receiver"),
 	}
 
 	ctx := c.Request.Context()
@@ -65,5 +67,20 @@ func (mh *MediaHttp) UploadFile(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.BasicResponse{
 		Data: mediaResponse.Data,
 	})
+}
 
+// nanti pake ini
+func (mh *MediaHttp) SendFile(c *gin.Context) {
+	name := c.Param("name")
+	toUser := c.Query("toUser")
+
+	ctx := c.Request.Context()
+	response, err := mh.mc.SendFile(ctx, name, toUser)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, responses.BasicResponse{
+		Data: response.Data,
+	})
 }
